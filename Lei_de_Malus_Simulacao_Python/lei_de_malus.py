@@ -2,6 +2,7 @@ import pygame
 import math
 import time
 pygame.init()
+# Zoio, Novembro de 2025
 
 
 def tela_de_jogo(tela):
@@ -10,29 +11,8 @@ def tela_de_jogo(tela):
     # ----------------------------------------------------
     
     # ======================================================
-    # CONFIGURAÇÃO DOS RETANGULOS DE OPACIDADE
-    # TODO
-    '''posicao_x_retan_opacidade = 470
-    posicao_y_retan_opacidade = 150
-    
-    posicao_x_retan_opacidade_2 = 970
-    posicao_y_retan_opacidade_2 = 150
-    
-    largura_retan_opacidade = 430
-    altura_retan_opacidade = 30
-    
-    largura_retan_opacidade_2 = 500
-    altura_retan_opacidade_2 = 30
-    
-    superficie_retan_opacidade = pygame.Surface((largura_retan_opacidade, altura_retan_opacidade), pygame.SRCALPHA)
-    superficie_retan_opacidade_2 = pygame.Surface((largura_retan_opacidade_2, altura_retan_opacidade_2), pygame.SRCALPHA)
-    opacidade_polarizador_1 = 128
-    cor_retan_opacidade = (255, 255, 0, opacidade_polarizador_1)'''
-
-    
-    
-    # ======================================================
     # CONFIGURAÇÕES INICIAIS DAS CAIXAS DE INPUT
+    # ======================================================
 
     # detalhes da cor da caixa
     caixa_input = pygame.Rect(915, 650, 140, 40)
@@ -59,6 +39,8 @@ def tela_de_jogo(tela):
     # ======================================================
     # LOOP INFINITO PARA SEMPRE ATUALIZAR A TELA 
     # PERMITE O USUÁRIO FAZER O INPUT DO ANGULO
+    # LÓGICA DE INTERAÇÃO COM A INTERFACE DO JOGO
+    # ======================================================
 
     # cria loop infinito
     rodando = True
@@ -148,6 +130,8 @@ def tela_de_jogo(tela):
                 
                         
         # ======================================================
+        # CAIXAS DE INPUT
+        # ======================================================
         
         # refresh da tela para interacao com a caixa de texto
         tela.fill((255, 255, 255))
@@ -167,27 +151,6 @@ def tela_de_jogo(tela):
         # renderizar o texto e desenhar na tela
         superficie_txt_intensidade = fonte_input_intensidade.render(intensidade_escolhida, True, (0, 0, 0))
         tela.blit(superficie_txt_intensidade, (caixa_input_intensidade.x+5, caixa_input_intensidade.y+5))
-        
-        # =======================================================
-        # OPACIDADE DO FEIXE DE LUZ DE ACORDO COM O ANGULO
-        # TODO
-        '''
-        if intensidade_escolhida != '':
-            intensidade_inicial = float(intensidade_escolhida)
-            opacidade_polarizador_1 = int(255 * (intensidade_inicial / 2) / intensidade_inicial)
-            superficie_retan_opacidade.set_alpha(opacidade_polarizador_1)
-            tela.blit(superficie_retan_opacidade, (posicao_x_retan_opacidade, posicao_y_retan_opacidade))
-        else:
-            opacidade_polarizador_1 = 0
-        
-        if angulo_escolhido != '':
-            angulo = float(angulo_escolhido)
-            intensidade_transmitida = (math.cos(math.radians(angulo)))**2
-            opacidade_polarizador_2 = int(255 * intensidade_transmitida)
-            superficie_retan_opacidade_2.set_alpha(opacidade_polarizador_2)
-        else:
-            opacidade_polarizador_2 = 0
-        '''
 
         
         # ======================================================================
@@ -196,11 +159,7 @@ def tela_de_jogo(tela):
         # feixe de luz
         cor_feixe_antes = (255, 255, 0)
         feixe_de_luz = pygame.draw.rect(tela, cor_feixe_antes, pygame.Rect(100, 100, 1240, 30))
-        
-        # feixe de luz depois do primeiro polarizador
-        
 
-        # polarizadores (de lado)
         # polarizador de lado
         cor_polarizador = (128, 128, 128)
         polarizador_de_lado = pygame.draw.rect(tela, cor_polarizador, pygame.Rect(510, 50, 40, 150))
@@ -217,8 +176,8 @@ def tela_de_jogo(tela):
         tela.blit(fonte_de_luz, (60, 50))
         
 
-        # polarizador #primeiro polarizador por onde a luz passa 
-        # divide intensidade na metadeSet
+        # polarizador 
+        #primeiro polarizador por onde a luz passa, divide intensidade na metade
         polarizador = pygame.image.load('images/Polarizador.png')
         polarizador = pygame.transform.scale(polarizador, (310, 310))
         tela.blit(polarizador, (372, 290))
@@ -259,12 +218,14 @@ def tela_de_jogo(tela):
         
         # =======================================================
         # LÓGICA DA LEI DE MALUS
+        # =======================================================
         
         if 'intensidade_inicial' in locals(): 
             intensidade_apos_primeiro_polarizador = intensidade_inicial / 2 
             texto_primeiro_polarizador = f'Intensidade no primeiro polarizador: W/m² {intensidade_apos_primeiro_polarizador:.2f}'
             texto_primeiro_polarizador_tela = fonte_texto.render(texto_primeiro_polarizador, 1, (0,0,0))
             tela.blit(texto_primeiro_polarizador_tela,(320, 610))
+            print(f"Intensidade após primeiro polarizador: {intensidade_apos_primeiro_polarizador:.2f} W/m²")
             pygame.display.flip()
         else: 0
         
@@ -273,6 +234,7 @@ def tela_de_jogo(tela):
             texto_final = f'Intensidade final (W/m²): {intensidade_final:.2f}'
             texto_final_tela = fonte_texto.render(texto_final, 1, (0,0,0))
             tela.blit(texto_final_tela,(1270,240)) 
+            print(f"Intensidade final após o analisador: {intensidade_final:.2f} W/m²")
             pygame.display.flip()
         else: 0
         
