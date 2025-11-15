@@ -4,6 +4,15 @@ import time
 pygame.init()
 # Zoio, Novembro de 2025
 
+def validar_angulo(valor_str):
+    try:
+        valor = float(valor_str)
+        if 0 <= valor <= 360:
+             return valor, None
+        else:
+            return 0, "Ângulo fora do intervalo válido (0-360). Ângulo definido para 0."
+    except ValueError:
+            return 0, "Entrada inválida. Ângulo definido para 0."
 
 def tela_de_jogo(tela):
     # ----------------------------------------------------
@@ -15,11 +24,15 @@ def tela_de_jogo(tela):
     # ======================================================
 
     # detalhes da cor da caixa
-    caixa_input = pygame.Rect(915, 650, 140, 40)
+    caixa_input_angulo = pygame.Rect(450, 650, 140, 40)
     cor_inativa = pygame.Color('lightskyblue3')
     cor_ativa = pygame.Color('dodgerblue2')
-    cor = cor_inativa
-    pygame.draw.rect(tela, cor, caixa_input, 2)
+    cor_angulo = cor_inativa
+    pygame.draw.rect(tela, cor_angulo, caixa_input_angulo, 2)
+    
+    caixa_input_angulo_2 = pygame.Rect(915, 650, 140, 40)
+    cor_angulo_2 = cor_inativa
+    pygame.draw.rect(tela, cor_angulo_2, caixa_input_angulo_2, 2)
     
     caixa_input_intensidade = pygame.Rect(60, 190, 140, 40)
     cor_intensidade = cor_inativa
@@ -30,9 +43,15 @@ def tela_de_jogo(tela):
     angulo_escolhido = ''
     fonte_input = pygame.font.Font(None, 32)
     
+    ativo_2 = False
+    angulo_escolhido_2 = ''
+    fonte_input = pygame.font.Font(None, 32)
+    
     ativo_intensidade = False
     intensidade_escolhida = ''
     fonte_input_intensidade = pygame.font.Font(None, 32)
+    
+    
     
 
 
@@ -52,14 +71,17 @@ def tela_de_jogo(tela):
                 rodando = False
                 
             elif evento.type == pygame.MOUSEBUTTONDOWN:
-                if caixa_input.collidepoint(evento.pos):
+                if caixa_input_angulo.collidepoint(evento.pos):
                     ativo = not ativo
                 elif caixa_input_intensidade.collidepoint(evento.pos):
                     ativo_intensidade = not ativo_intensidade
-                else:
-                    ativo = False
-                cor = cor_ativa if ativo else cor_inativa
+                elif caixa_input_angulo_2.collidepoint(evento.pos):
+                    ativo_2 = not ativo_2
+                    
+                cor_angulo = cor_ativa if ativo else cor_inativa
                 cor_intensidade = cor_ativa if ativo_intensidade else cor_inativa
+                cor_angulo_2 = cor_ativa if ativo_2 else cor_inativa
+                
                 
             elif evento.type == pygame.KEYDOWN:
                 
@@ -67,7 +89,7 @@ def tela_de_jogo(tela):
                     return "menu"
                 
                 if ativo:
-                    if ativo_intensidade == False:
+                    if ativo_intensidade == False and ativo_2 == False:
                         if evento.key == pygame.K_RETURN:
                             
                             print(f"Ângulo inserido: {angulo_escolhido}")
@@ -77,22 +99,18 @@ def tela_de_jogo(tela):
                             elif angulo_escolhido.replace('.','',1).isdigit():
                                 angulo = float(angulo_escolhido)
                                 print(f"Valor do ângulo definido para: {angulo}")
-                            elif float(angulo_escolhido) < 0 or float(angulo_escolhido) > 360:
+                            elif validar_angulo(angulo_escolhido) == False:
                                 angulo = 0
-                                print("Ângulo fora do intervalo válido (0-360). Ângulo definido para 0.")
-                            else:
-                                angulo = 0 # valor padrão do angulo se não for int
-                                print("Entrada inválida. Ângulo definido para 0.")
                             
                             angulo_escolhido = ''
 
                         elif evento.key == pygame.K_BACKSPACE:
-                            angulo_escolhido = angulo_escolhido[:-1]
+                            angulo_escolhido = angulo_escolhido_2[:-1]
                         else:
                             angulo_escolhido += evento.unicode
                 
                 if ativo_intensidade:
-                    if ativo == False:
+                    if ativo_2 == False and ativo == False:
                         if evento.key == pygame.K_RETURN:
                             
                             print(f"Intensidade inserida: {intensidade_escolhida}")
@@ -117,14 +135,41 @@ def tela_de_jogo(tela):
                             intensidade_escolhida += evento.unicode
                     else :
                         pass
+                
+                if ativo_2:
+                    if ativo == False and ativo_intensidade == False:
+                        if evento.key == pygame.K_RETURN:
+                            
+                            print(f"Ângulo inserido: {angulo_escolhido_2}")
+                            if angulo_escolhido_2.isdigit():
+                                angulo2 = int(angulo_escolhido_2) 
+                                print(f"Valor do ângulo definido para: {angulo2}")
+                            elif angulo_escolhido_2.replace('.','',1).isdigit():
+                                angulo2 = float(angulo_escolhido_2)
+                                print(f"Valor do ângulo definido para: {angulo2}")
+                            elif validar_angulo(angulo_escolhido_2) == False:
+                                angulo2 = 0
+                            
+                            angulo_escolhido_2 = ''
+
+                        elif evento.key == pygame.K_BACKSPACE:
+                            angulo_escolhido_2 = angulo_escolhido_2[:-1]
+                        else:
+                            angulo_escolhido_2 += evento.unicode
+                else:
+                    pass
+                        
                     
                 if evento.key == pygame.K_BACKSPACE:
                     intensidade_escolhida = ''
                     angulo_escolhido = ''
+                    angulo_escolhido_2 = ''
                     if 'intensidade_inicial' in locals():
                         del intensidade_inicial
                     if 'angulo' in locals():
                         del angulo
+                    if 'angulo2' in locals():
+                        del angulo2
                 else:
                     pass
                 
@@ -137,12 +182,20 @@ def tela_de_jogo(tela):
         tela.fill((255, 255, 255))
         
         # caixa de input de ângulo
-        pygame.draw.rect(tela, (200, 200, 200), caixa_input)
-        pygame.draw.rect(tela, cor, caixa_input, 2)
+        pygame.draw.rect(tela, (200, 200, 200), caixa_input_angulo)
+        pygame.draw.rect(tela, cor_angulo, caixa_input_angulo, 2)
 
         # renderizar o texto e desenhar na tela
-        superficie_txt = fonte_input.render(angulo_escolhido, True, (0, 0, 0))
-        tela.blit(superficie_txt, (caixa_input.x+5, caixa_input.y+5))
+        superficie_txt_angulo = fonte_input.render(angulo_escolhido, True, (0, 0, 0))
+        tela.blit(superficie_txt_angulo, (caixa_input_angulo.x+5, caixa_input_angulo.y+5))
+        
+        #caixa de input angulo 2
+        pygame.draw.rect(tela, (200, 200, 200), caixa_input_angulo_2)
+        pygame.draw.rect(tela, cor_angulo_2, caixa_input_angulo_2, 2)
+
+        # renderizar o texto e desenhar na tela
+        superficie_txt_angulo_2 = fonte_input.render(angulo_escolhido_2, True, (0, 0, 0))
+        tela.blit(superficie_txt_angulo_2, (caixa_input_angulo_2.x+5, caixa_input_angulo_2.y+5))
         
         # caixa de input de intensidade inicial
         pygame.draw.rect(tela, (200, 200, 200), caixa_input_intensidade)
@@ -202,9 +255,13 @@ def tela_de_jogo(tela):
         fonte=pygame.font.get_default_font()              
         fonte_texto=pygame.font.SysFont(fonte, 25)                            
                 
-        texto_voltar = 'Pressione ESC para voltar ao menu principal.'
-        texto_voltar_tela = fonte_texto.render(texto_voltar, 1, (0,0,0))
-        tela.blit(texto_voltar_tela,(50,270))
+        texto_intensidade = 'Insira a Intensidade Inicial (W/m²):'
+        texto_intensidade_tela = fonte_texto.render(texto_intensidade, 1, (0,0,0))
+        tela.blit(texto_intensidade_tela,(50,270))
+        
+        texto_angulo = 'Insira o ângulo do polarizador (°):'
+        texto_angulo_tela = fonte_texto.render(texto_angulo, 1, (0,0,0))
+        tela.blit(texto_angulo_tela,(390,710))
         
         
         texto_angulo = 'Insira o ângulo do analisador (°):'
@@ -220,25 +277,28 @@ def tela_de_jogo(tela):
         # LÓGICA DA LEI DE MALUS
         # =======================================================
         
-        if 'intensidade_inicial' in locals(): 
-            intensidade_apos_primeiro_polarizador = intensidade_inicial / 2 
-            texto_primeiro_polarizador = f'Intensidade no primeiro polarizador: W/m² {intensidade_apos_primeiro_polarizador:.2f}'
-            texto_primeiro_polarizador_tela = fonte_texto.render(texto_primeiro_polarizador, 1, (0,0,0))
-            tela.blit(texto_primeiro_polarizador_tela,(320, 610))
-            print(f"Intensidade após primeiro polarizador: {intensidade_apos_primeiro_polarizador:.2f} W/m²")
-            pygame.display.flip()
+        if 'intensidade_inicial' in locals() and 'angulo' in locals():
+            if angulo != 0:
+                intensidade_apos_primeiro_polarizador = intensidade_inicial * (math.cos(math.radians(angulo)))**2
+                texto_primeiro_polarizador = f'Intensidade após primeiro polarizador: W/m² {intensidade_apos_primeiro_polarizador:.2f}'
+                texto_primeiro_polarizador_tela = fonte_texto.render(texto_primeiro_polarizador, 1, (0,0,0))
+                tela.blit(texto_primeiro_polarizador_tela,(320, 620))
+                print(f"Intensidade após primeiro polarizador: {intensidade_apos_primeiro_polarizador:.2f} W/m²")
+            else:
+                intensidade_apos_primeiro_polarizador = intensidade_inicial / 2
+                texto_primeiro_polarizador = f'Intensidade após primeiro polarizador: W/m² {intensidade_apos_primeiro_polarizador:.2f}'
+                texto_primeiro_polarizador_tela = fonte_texto.render(texto_primeiro_polarizador, 1, (0,0,0))
+                tela.blit(texto_primeiro_polarizador_tela,(320, 620))
+                print(f"Intensidade após primeiro polarizador: {intensidade_apos_primeiro_polarizador:.2f} W/m²")
         else: 0
+
         
-        if 'angulo' in locals() and 'intensidade_inicial' in locals():
-            intensidade_final = intensidade_apos_primeiro_polarizador * (math.cos(math.radians(angulo)))**2 
+        if 'angulo2' in locals():
+            intensidade_final = intensidade_apos_primeiro_polarizador * (math.cos(math.radians(angulo2)))**2 
             texto_final = f'Intensidade final (W/m²): {intensidade_final:.2f}'
             texto_final_tela = fonte_texto.render(texto_final, 1, (0,0,0))
             tela.blit(texto_final_tela,(1270,240)) 
             print(f"Intensidade final após o analisador: {intensidade_final:.2f} W/m²")
-            pygame.display.flip()
         else: 0
         
-        
         pygame.display.flip()
-        
-
