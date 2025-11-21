@@ -5,7 +5,10 @@ import menu
 import lei_de_malus
 import tutorial
 
-
+# Alunos: Luca Zoio, Lucas de Jesus
+# ======================================================
+#   SIMULAÇÃO DA LEI DE MALUS EM PYTHON COM PYGAME
+# ======================================================
 
 pygame.init()
 largura_tela =  1540

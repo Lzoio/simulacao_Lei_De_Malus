@@ -1,15 +1,16 @@
 import pygame
 import math
-import time
 pygame.init()
 
 def tela_menu(tela):
     
-    # ----------------------------------------------------
-    # SIMULAÇÃO DA LEI DE MALUS EM PYTHON COM PYGAME
-    # ----------------------------------------------------
+    # Alunos: Luca Zoio, Lucas de Jesus
     # ======================================================
-    # INICIALIZAR BOTOES DE MENU
+    #     SIMULAÇÃO DA LEI DE MALUS EM PYTHON COM PYGAME
+    # ======================================================
+    
+    # ======================================================
+    #               INICIALIZAR BOTOES DE MENU
     # ======================================================
 
     cor_botao_tutorial = (100, 100, 100) 
@@ -24,7 +25,7 @@ def tela_menu(tela):
     superficie_texto_tutorial = fonte_botao.render(texto_str_tutorial, True, cor_texto)
     superficie_texto_jogar = fonte_botao.render(texto_str_jogar, True, cor_texto)
     
-
+    
     rect_texto_tutorial = superficie_texto_tutorial.get_rect()
     rect_texto_jogar = superficie_texto_jogar.get_rect()
 
@@ -35,14 +36,13 @@ def tela_menu(tela):
     pygame.display.flip() 
 
     # ======================================================
-    # LOOP INFINITO PARA SEMPRE ATUALIZAR A TELA 
-
-    # cria loop infinito
+    #       LOOP INFINITO PARA SEMPRE ATUALIZAR A TELA 
+    # ======================================================
+    
     rodando = True
     while rodando:
-        # processameto de eventos
+        # Eventos de menu
         for evento in pygame.event.get():
-            # separa por tipos de eventos -> QUIT, KEYDOWN, MOUSEBUTTONDOWN, ETC.
             if evento.type == pygame.QUIT:
                 rodando = False
                 
@@ -65,7 +65,7 @@ def tela_menu(tela):
         retangulo_navegação = pygame.Rect(0, 0, 1540, 120)
         pygame.draw.rect(tela, (55, 150, 200), retangulo_navegação)
         
-        # botoes
+        # Botoes
         pygame.draw.rect(tela, cor_botao_tutorial, rect_botao_tutorial)
         pygame.draw.rect(tela, cor_botao_jogar, rect_botao_jogar)
         tela.blit(superficie_texto_tutorial, rect_texto_tutorial)
@@ -76,19 +76,18 @@ def tela_menu(tela):
         #                   TEXTOS NA TELA 
         # ======================================================
         
-        # texto inicial 
+        # Textos
         texto_inicio='MENU INICIAL'
-        texto_principal = 'SIMULAÇÃO DA LEI DE MALUS'                           
+        texto_principal = 'SIMULAÇÃO DA LEI DE MALUS' 
+        texto_str_alunos = "Alunos: Luca Zoio, Lucas de Jesus"                          
         fonte=pygame.font.get_default_font()              
-        fonte_texto=pygame.font.SysFont(fonte, 60)           
+        fonte_texto=pygame.font.SysFont(fonte, 60) 
+        fonte_alunos=pygame.font.SysFont(fonte, 24)          
         texto_menu_tela = fonte_texto.render(texto_inicio, 3, (0,0,0)) 
         texto_menu_principal = fonte_texto.render(texto_principal, 3, (55,150,200))  
         tela.blit(texto_menu_tela,(620,200))
-        tela.blit(texto_menu_principal,(450,250))                   
+        tela.blit(texto_menu_principal,(450,250)) 
+        tela.blit(fonte_alunos.render(texto_str_alunos, 1, (0,0,0)), (50, 760))                  
         
         
         pygame.display.flip()
-            
-        
-
-    # atualizar tudo na tela após os desenhos e funções
